@@ -54,6 +54,7 @@ public class Core : Game
         GraphicsDevice = base.GraphicsDevice;
 
         SpriteBatch = new SpriteBatch(GraphicsDevice);
+
     }
 
 
