@@ -80,8 +80,8 @@ public class TextureAtlas
                         }
                     }
                 }
-
                 return atlas;
+
             }
         }
     }

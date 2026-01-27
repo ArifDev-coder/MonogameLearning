@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame;
+using Slime.Graphics;
 
 namespace Slime;
 
@@ -18,14 +19,10 @@ public class Game1 : Core
     private Texture2D _logo_se;
 
     /// <summary>
-    /// Tekstur logo "MonoGame" yang ditampilkan di tengah layar.
-    /// </summary>
-    private Texture2D _logo_mg;
-
-    /// <summary>
     /// Tekstur karakter slime yang akan dimainkan dalam permainan.
     /// </summary>
-    private Texture2D _slime;
+    private TextureRegion _slime0;
+    private TextureRegion _slime1;
 
     /// <summary>
     /// Konstruktor untuk membuat game "Dungeon Slime" dengan ukuran 1280x720 pixel.
@@ -53,9 +50,12 @@ public class Game1 : Core
     {
         base.LoadContent();
 
+        TextureAtlas atlas = TextureAtlas.FromFile(Content, "atlas-definition.xml");
+
+        _slime0 = atlas.GetRegion("slime0");
+        _slime1 = atlas.GetRegion("slime1");
+        
         _logo_se = Content.Load<Texture2D>("images/logo");
-        _logo_mg = Content.Load<Texture2D>("images/logomg");
-        _slime = Content.Load<Texture2D>("images/pixil-frame-0");
     }
 
     /// <summary>
@@ -82,45 +82,59 @@ public class Game1 : Core
     {
         GraphicsDevice.Clear(Color.Gray);
 
-        Rectangle IconSourceRect = new(0, 0, 128, 128);
-        Rectangle WordmarkSourceRect = new(150, 34, 458, 58);
+        // Rectangle IconSourceRect = new(0, 0, 128, 128);
+        // Rectangle WordmarkSourceRect = new(150, 34, 458, 58);
 
-        SpriteBatch.Begin(); // sortMode: SpriteSortMode.BackToFront
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp); // sortMode: SpriteSortMode.BackToFront
 
-        SpriteBatch.Draw(_logo_mg,                     // Texture
-            new Vector2(                            // Position
-                Window.ClientBounds.Width,
-                Window.ClientBounds.Height) * 0.5f,
-            IconSourceRect,                                   // SourceRectangle
-            Color.White * 0.9f,                     // Color
-            0.0f,                                   // Rotation (MathHelper.ToRadians(0))
+        // SpriteBatch.Draw(_logo_mg,                     // Texture
+        //     new Vector2(                            // Position
+        //         Window.ClientBounds.Width,
+        //         Window.ClientBounds.Height) * 0.5f,
+        //     IconSourceRect,                                   // SourceRectangle
+        //     Color.White * 0.9f,                     // Color
+        //     0.0f,                                   // Rotation (MathHelper.ToRadians(0))
+        //     new Vector2(
+        //         IconSourceRect.Width,
+        //         IconSourceRect.Height) * 0.5f,               // Origin
+        //     1.0f,                                   // Scale (bisa paka new Vector2(x, y))
+        //     SpriteEffects.None,                     // Effects (Flip horizonal or vertical) SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally
+        //     1.0f                                    // LayerDepth (seperti z-index di html)
+        // );
+
+        // SpriteBatch.Draw(_logo_mg,                     // Texture
+        //     new Vector2(                            // Position
+        //         Window.ClientBounds.Width,
+        //         Window.ClientBounds.Height) * 0.5f,
+        //     WordmarkSourceRect,                                   // SourceRectangle
+        //     Color.White * 0.9f,                     // Color
+        //     0.0f,                                   // Rotation (MathHelper.ToRadians(0))
+        //     new Vector2(
+        //         WordmarkSourceRect.Width,
+        //         WordmarkSourceRect.Height) * 0.5f,               // Origin
+        //     1.0f,                                   // Scale (bisa paka new Vector2(x, y))
+        //     SpriteEffects.None,                     // Effects (Flip horizonal or vertical) SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally
+        //     0.0f                                    // LayerDepth
+        // );
+
+        _slime0.Draw(SpriteBatch, Vector2.Zero, Color.White, 0.0f, Vector2.One, 4.0f, SpriteEffects.None, 0.0f);
+        _slime1.Draw(
+            SpriteBatch,
             new Vector2(
-                IconSourceRect.Width,
-                IconSourceRect.Height) * 0.5f,               // Origin
-            1.0f,                                   // Scale (bisa paka new Vector2(x, y))
-            SpriteEffects.None,                     // Effects (Flip horizonal or vertical) SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally
-            1.0f                                    // LayerDepth (seperti z-index di html)
-        );
-
-        SpriteBatch.Draw(_logo_mg,                     // Texture
-            new Vector2(                            // Position
-                Window.ClientBounds.Width,
-                Window.ClientBounds.Height) * 0.5f,
-            WordmarkSourceRect,                                   // SourceRectangle
-            Color.White * 0.9f,                     // Color
-            0.0f,                                   // Rotation (MathHelper.ToRadians(0))
-            new Vector2(
-                WordmarkSourceRect.Width,
-                WordmarkSourceRect.Height) * 0.5f,               // Origin
-            1.0f,                                   // Scale (bisa paka new Vector2(x, y))
-            SpriteEffects.None,                     // Effects (Flip horizonal or vertical) SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally
-            0.0f                                    // LayerDepth
+                500, 500
+            ),
+            Color.White,
+            0.0f,
+            Vector2.One,
+            4.0f,
+            SpriteEffects.None,
+            0.0f
         );
 
         SpriteBatch.Draw(_logo_se,
             new Vector2(
                 Window.ClientBounds.Width,
-                0) * 0.5f,
+                10) * 0.5f,
             null,
             Color.White,
             0.0f,
@@ -132,18 +146,6 @@ public class Game1 : Core
             0.0f
         );
 
-        SpriteBatch.Draw(_slime,                     // Texture
-            new Vector2(500.0f, 500.0f),               // Position,
-            null,                                    // SourceRectangle
-            Color.White,                             // Color
-            0.0f,                                    // Rotation (MathHelper.ToRadians(0))
-            new Vector2(
-                _slime.Width,
-                _slime.Height) * 0.5f,               // Origin
-            5.0f,                                    // Scale (bisa paka new Vector2(x, y))
-            SpriteEffects.None,                      // Effects (Flip horizonal or vertical) SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally
-            0.0f                                     // LayerDepth
-        );
 
 
         SpriteBatch.End();
